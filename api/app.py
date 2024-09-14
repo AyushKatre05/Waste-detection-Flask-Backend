@@ -14,8 +14,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Define the directories where images and videos are saved
-IMAGE_DIR = 'images'  # Directory to save processed images
-VIDEO_DIR = 'videos'  # Directory to save processed videos
+IMAGE_DIR = '/tmp/images'  # Directory to save processed images (temporary directory)
+VIDEO_DIR = '/tmp/videos'  # Directory to save processed videos (temporary directory)
 
 # Create directories if they do not exist
 os.makedirs(IMAGE_DIR, exist_ok=True)
@@ -144,16 +144,20 @@ def detect_video():
 @app.route('/download/image', methods=['GET'])
 def download_image():
     image_path = request.args.get('image_path')
-    if image_path and os.path.exists(os.path.join(IMAGE_DIR, image_path)):
-        return send_from_directory(IMAGE_DIR, image_path, as_attachment=True)
+    full_image_path = os.path.join(IMAGE_DIR, image_path)
+    
+    if image_path and os.path.exists(full_image_path):
+        return send_from_directory('/tmp/images', image_path, as_attachment=True)
     return jsonify({'error': 'Image not found'}), 404
 
 # Flask route to download processed video
 @app.route('/download/video', methods=['GET'])
 def download_video():
     video_path = request.args.get('video_path')
-    if video_path and os.path.exists(os.path.join(VIDEO_DIR, video_path)):
-        return send_from_directory(VIDEO_DIR, video_path, mimetype='video/mp4')
+    full_video_path = os.path.join(VIDEO_DIR, video_path)
+    
+    if video_path and os.path.exists(full_video_path):
+        return send_from_directory('/tmp/videos', video_path, mimetype='video/mp4')
     return jsonify({'error': 'Video not found'}), 404
 
 if __name__ == '__main__':
