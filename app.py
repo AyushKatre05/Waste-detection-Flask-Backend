@@ -13,9 +13,9 @@ logging.getLogger('ultralytics').setLevel(logging.ERROR)
 app = Flask(__name__)
 CORS(app)
 
-# Define the directories where images and videos are saved
-IMAGE_DIR = 'images'  # Directory to save processed images
-VIDEO_DIR = 'videos'  # Directory to save processed videos
+IMAGE_DIR = '/app/storage/images'
+VIDEO_DIR = '/app/storage/videos'
+
 
 # Create directories if they do not exist
 os.makedirs(IMAGE_DIR, exist_ok=True)
