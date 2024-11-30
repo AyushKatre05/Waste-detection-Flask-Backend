@@ -13,25 +13,20 @@ logging.getLogger('ultralytics').setLevel(logging.ERROR)
 app = Flask(__name__)
 CORS(app)
 
-IMAGE_DIR = '/app/storage/images'
-VIDEO_DIR = '/app/storage/videos'
+IMAGE_DIR = 'images' 
+VIDEO_DIR = 'videos'  
 
-
-# Create directories if they do not exist
 os.makedirs(IMAGE_DIR, exist_ok=True)
 os.makedirs(VIDEO_DIR, exist_ok=True)
 
-# Define the model path and load the YOLO model
 model_path = "runs/detect/train/weights/last.pt"
 model = YOLO(model_path)
 
-# Function to calculate area of a bounding box
 def area_calc(x1, y1, x2, y2):
     length = abs(x1 - x2)
     width = abs(y1 - y2)
     return length * width
 
-# Function to process a frame (image or video frame)
 def process_frame(frame):
     height, width = frame.shape[:2]
     new_size = (int(width * 0.5), int(height * 0.5))
@@ -58,7 +53,6 @@ def process_frame(frame):
 
     return r_img, area, boxes
 
-# Flask route to handle image uploads
 @app.route('/detect/image', methods=['POST'])
 def detect_image():
     if 'image' not in request.files:
@@ -83,12 +77,11 @@ def detect_image():
         'image_area': image_area,
         'percentage_waste': percentage_waste,
         'boxes': boxes,
-        'processed_image_path': 'processed_image.jpg'  # Relative path
+        'processed_image_path': 'processed_image.jpg'  
     }
 
     return jsonify(response)
 
-# Flask route to handle video uploads
 @app.route('/detect/video', methods=['POST'])
 def detect_video():
     if 'video' not in request.files:
@@ -140,7 +133,6 @@ def detect_video():
 
     return jsonify(response)
 
-# Flask route to download processed image
 @app.route('/download/image', methods=['GET'])
 def download_image():
     image_path = request.args.get('image_path')
